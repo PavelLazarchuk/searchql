@@ -1,0 +1,82 @@
+name: CI
+
+on:
+    pull_request:
+    push:
+        branches: [main]
+
+jobs:
+    verify:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  cache: npm
+
+            - run: npm ci
+
+            - name: Format check
+              run: npm run format:check
+
+            - name: Lint
+              run: npm run lint
+
+            - name: Typecheck
+              run: npm run typecheck
+
+            - name: Unit tests with coverage (SQLite, Postgres via PGlite, mingo)
+              run: npm run test:coverage
+
+            - name: Build
+              run: npm run build
+
+            - name: Bundle size
+              run: npm run size
+
+            - name: Exports sanity (publint + attw)
+              run: npm run check-exports
+
+            - name: Tarball contents review
+              run: npm run pack:verify
+
+    node22:
+        name: Tests on Node 22
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+
+            - run: npm ci
+
+            - name: Unit tests
+              run: npm run test
+
+    node20:
+        name: Built package on Node 20
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  cache: npm
+
+            - run: npm ci
+
+            - run: npm run build
+
+            # Tests need node:sqlite (Node 22+).
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: Smoke test ESM and CJS builds
+              run: node scripts/smoke-dist.mjs

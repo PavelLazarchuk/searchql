@@ -1,0 +1,167 @@
+{
+    "name": "searchql",
+    "version": "1.0.0",
+    "description": "GitHub-style search syntax for your own app: a typed field schema, a parser that never throws, autocomplete, filter-chip editing, and safe compilation to parameterized SQL (Postgres, MySQL, SQLite), Prisma, MongoDB or an in-memory predicate. Zero dependencies.",
+    "license": "MIT",
+    "sideEffects": false,
+    "type": "module",
+    "engines": {
+        "node": ">=20"
+    },
+    "files": [
+        "dist"
+    ],
+    "publishConfig": {
+        "access": "public",
+        "provenance": true
+    },
+    "exports": {
+        ".": {
+            "import": {
+                "types": "./dist/index.d.ts",
+                "default": "./dist/index.js"
+            },
+            "require": {
+                "types": "./dist/index.d.cts",
+                "default": "./dist/index.cjs"
+            }
+        },
+        "./sql": {
+            "import": {
+                "types": "./dist/sql/index.d.ts",
+                "default": "./dist/sql/index.js"
+            },
+            "require": {
+                "types": "./dist/sql/index.d.cts",
+                "default": "./dist/sql/index.cjs"
+            }
+        },
+        "./prisma": {
+            "import": {
+                "types": "./dist/prisma/index.d.ts",
+                "default": "./dist/prisma/index.js"
+            },
+            "require": {
+                "types": "./dist/prisma/index.d.cts",
+                "default": "./dist/prisma/index.cjs"
+            }
+        },
+        "./mongo": {
+            "import": {
+                "types": "./dist/mongo/index.d.ts",
+                "default": "./dist/mongo/index.js"
+            },
+            "require": {
+                "types": "./dist/mongo/index.d.cts",
+                "default": "./dist/mongo/index.cjs"
+            }
+        },
+        "./package.json": "./package.json"
+    },
+    "typesVersions": {
+        "*": {
+            "sql": [
+                "./dist/sql/index.d.ts"
+            ],
+            "prisma": [
+                "./dist/prisma/index.d.ts"
+            ],
+            "mongo": [
+                "./dist/mongo/index.d.ts"
+            ]
+        }
+    },
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "scripts": {
+        "build": "tsup",
+        "dev": "tsup --watch",
+        "typecheck": "tsc --noEmit",
+        "lint": "eslint .",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "test": "vitest run",
+        "test:coverage": "vitest run --coverage",
+        "test:watch": "vitest",
+        "check-exports": "publint && attw --pack .",
+        "size": "size-limit",
+        "pack:verify": "npm pack --dry-run",
+        "changeset": "changeset",
+        "release": "npm run build && node scripts/publish-if-new.mjs",
+        "prepare": "husky"
+    },
+    "keywords": [
+        "search",
+        "search-syntax",
+        "search-query",
+        "query-language",
+        "query-parser",
+        "filter",
+        "filters",
+        "filter-chips",
+        "faceted-search",
+        "github-search",
+        "gmail-search",
+        "advanced-search",
+        "autocomplete",
+        "typeahead",
+        "syntax-highlighting",
+        "dsl",
+        "parser",
+        "ast",
+        "sql",
+        "where-clause",
+        "parameterized-query",
+        "sql-injection",
+        "postgres",
+        "postgresql",
+        "mysql",
+        "sqlite",
+        "prisma",
+        "mongodb",
+        "mongo",
+        "drizzle",
+        "kysely",
+        "relative-dates",
+        "llm",
+        "typescript",
+        "zero-dependencies"
+    ],
+    "author": "Pavel Lazarchuk",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/PavelLazarchuk/searchql.git"
+    },
+    "bugs": {
+        "url": "https://github.com/PavelLazarchuk/searchql/issues"
+    },
+    "homepage": "https://github.com/PavelLazarchuk/searchql#readme",
+    "devDependencies": {
+        "@arethetypeswrong/cli": "^0.18.5",
+        "@changesets/cli": "^2.31.1",
+        "@electric-sql/pglite": "^0.5.9",
+        "@eslint/js": "^10.0.1",
+        "@size-limit/preset-small-lib": "^13.0.3",
+        "@types/node": "^26.4.0",
+        "@vitest/coverage-v8": "^4.1.11",
+        "eslint": "^10.9.1",
+        "eslint-config-prettier": "^10.1.8",
+        "fast-check": "^4.10.2",
+        "husky": "^9.1.7",
+        "lint-staged": "^17.4.1",
+        "mingo": "^7.2.4",
+        "prettier": "^3.9.6",
+        "publint": "^0.3.24",
+        "size-limit": "^13.0.3",
+        "tsup": "^8.5.1",
+        "typescript": "^6.0.3",
+        "typescript-eslint": "^8.68.0",
+        "vitest": "^4.1.11"
+    },
+    "overrides": {
+        "tsup": {
+            "esbuild": "^0.28.2"
+        }
+    }
+}

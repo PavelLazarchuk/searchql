@@ -1,0 +1,56 @@
+[
+    {
+        "name": "searchql (everything)",
+        "path": "dist/index.js",
+        "limit": "13.7 kB",
+        "gzip": true
+    },
+    {
+        "name": "searchql (cjs)",
+        "path": "dist/index.cjs",
+        "limit": "14.2 kB",
+        "gzip": true
+    },
+    {
+        "name": "searchql { parse }",
+        "path": "dist/index.js",
+        "import": "{ parse }",
+        "limit": "5.9 kB",
+        "gzip": true
+    },
+    {
+        "name": "searchql { parse, toPredicate }",
+        "path": "dist/index.js",
+        "import": "{ parse, toPredicate }",
+        "limit": "8.4 kB",
+        "gzip": true
+    },
+    {
+        "name": "searchql { parse, suggest, highlight }",
+        "path": "dist/index.js",
+        "import": "{ parse, suggest, highlight }",
+        "limit": "7.75 kB",
+        "gzip": true
+    },
+    {
+        "name": "searchql/sql",
+        "path": "dist/sql/index.js",
+        "import": "{ toSql }",
+        "limit": "3.95 kB",
+        "gzip": true
+    },
+    {
+        "name": "searchql/prisma",
+        "path": "dist/prisma/index.js",
+        "import": "{ toPrismaWhere }",
+        "limit": "3.1 kB",
+        "gzip": true
+    },
+    {
+        "name": "searchql/mongo",
+        "path": "dist/mongo/index.js",
+        "import": "{ toMongoFilter }",
+        "limit": "2.85 kB",
+        "gzip": true
+    }
+]

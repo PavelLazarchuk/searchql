@@ -154,7 +154,7 @@ export function canBeEmpty(field: FieldDefinition): boolean {
 }
 
 export function getField(schema: Schema, name: string): FieldDefinition {
-    const field = schema.fields[name];
+    const field = Object.hasOwn(schema.fields, name) ? schema.fields[name] : undefined;
     if (!field) {
         throw new TypeError(`Unknown field "${name}"`);
     }

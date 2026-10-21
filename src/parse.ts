@@ -41,7 +41,12 @@ const OPERATOR_TEXT: Record<string, string> = {
     range: '..',
 };
 
-const BOOLEANS: Record<string, boolean> = { true: true, yes: true, false: false, no: false };
+const BOOLEANS: ReadonlyMap<string, boolean> = new Map([
+    ['true', true],
+    ['yes', true],
+    ['false', false],
+    ['no', false],
+]);
 
 const NUMBER_PATTERN = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i;
 
@@ -607,7 +612,7 @@ class Parser {
             }
             case 'boolean': {
                 const typed = unquote(raw);
-                const value = BOOLEANS[typed.toLowerCase()];
+                const value = BOOLEANS.get(typed.toLowerCase());
                 if (value === undefined) {
                     this.report(
                         'error',

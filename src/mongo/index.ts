@@ -18,8 +18,6 @@ export interface MongoOptions<S extends Schema = Schema> extends LowerOptions<S>
     readonly text?: (term: string) => MongoFilter;
 }
 
-const MATCH_NOTHING: MongoFilter = { $nor: [{}] };
-
 export function toMongoFilter<S extends Schema>(
     query: QueryInput,
     schema: S,
@@ -48,7 +46,7 @@ export function toMongoFilter<S extends Schema>(
     const compile = (node: LoweredNode): MongoFilter => {
         switch (node.type) {
             case 'const':
-                return node.value ? {} : MATCH_NOTHING;
+                return node.value ? {} : { $nor: [{}] };
             case 'and':
                 return { $and: node.children.map(compile) };
             case 'or':

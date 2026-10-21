@@ -156,5 +156,7 @@ describe('lower', () => {
     it('rejects hand-built trees that name unknown fields', () => {
         const node: QueryNode = { type: 'exists', field: 'nope', span: { start: 0, end: 0 } };
         expect(() => lower(node, issues)).toThrow('Unknown field "nope"');
+        const inherited: QueryNode = { ...node, field: 'constructor' };
+        expect(() => lower(inherited, issues)).toThrow('Unknown field "constructor"');
     });
 });

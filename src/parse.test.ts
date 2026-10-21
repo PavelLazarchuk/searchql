@@ -127,6 +127,14 @@ describe('filters', () => {
         );
     });
 
+    it('rejects object property names as booleans', () => {
+        for (const word of ['constructor', '__proto__', 'toString']) {
+            const result = parse(`draft:${word}`, issues);
+            expect(result.ok).toBe(false);
+            expect(result.diagnostics[0]!.code).toBe('invalid-value');
+        }
+    });
+
     it('reads dates', () => {
         const node = ast('created:2026-03 created:today created:-7d created:2026-03-14T10:00:00Z');
         expect(node).toMatchObject({

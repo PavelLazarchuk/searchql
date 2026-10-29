@@ -1,6 +1,6 @@
 {
     "name": "searchql",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "GitHub-style search syntax for your own app: a typed field schema, a parser that never throws, autocomplete, filter-chip editing, and safe compilation to parameterized SQL (Postgres, MySQL, SQLite), Prisma, MongoDB or an in-memory predicate. Zero dependencies.",
     "license": "MIT",
     "sideEffects": false,

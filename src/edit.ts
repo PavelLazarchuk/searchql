@@ -1,6 +1,6 @@
 import { parse } from './parse';
 import { getField, internals } from './schema';
-import { indexOfUnquoted, isWhitespace, quoteIfNeeded } from './scan';
+import { indexOfUnquoted, isWhitespace, quoteIfNeeded, splitUnquoted, unquote } from './scan';
 import type {
     FieldDefinition,
     FieldName,
@@ -110,12 +110,15 @@ export function removeFilter<S extends Schema>(
     const key = valueKey(schema, target, value);
     const edits: Edit[] = [];
     for (const term of existing) {
-        const keys = keysOf(schema, term);
-        if (!keys.includes(key)) continue;
-        const keep = term.filter.values.filter((_, index) => keys[index] !== key);
+        if (!keysOf(schema, term).includes(key)) continue;
+
+        const prefix = prefixOf(term);
+        const keep = splitUnquoted(term.filter.text.slice(prefix.length), ',')
+            .map(piece => piece.text)
+            .filter(piece => piece !== '' && rawKey(schema, target, piece) !== key);
         edits.push({
             span: term.filter.span,
-            text: keep.length > 0 ? prefixOf(term) + keep.join(',') : null,
+            text: keep.length > 0 ? prefix + keep.join(',') : null,
         });
     }
     return applyEdits(input, edits);
@@ -138,7 +141,8 @@ export function toggleFilter<S extends Schema>(
     );
     if (!list) return addFilter(input, schema, field, value, { negate: negated });
     const end = list.filter.span.end;
-    return `${input.slice(0, end)},${quoteIfNeeded(value)}${input.slice(end)}`;
+    const separator = input[end - 1] === ',' ? '' : ',';
+    return `${input.slice(0, end)}${separator}${quoteIfNeeded(value)}${input.slice(end)}`;
 }
 
 const OPS = { '>': 'gt', '>=': 'gte', '<': 'lt', '<=': 'lte' } as const;
@@ -230,11 +234,16 @@ function keysOf(schema: Schema, term: Term): string[] {
 
 function valueKey(schema: Schema, target: Target, value: string): string {
     if (target.kind === 'shortcut') return value.toLowerCase();
-    const result = parse(`${target.name}:${quoteIfNeeded(value)}`, schema);
+    return rawKey(schema, target, quoteIfNeeded(value));
+}
+
+function rawKey(schema: Schema, target: Target, raw: string): string {
+    if (target.kind === 'shortcut') return unquote(raw).toLowerCase();
+    const result = parse(`${target.name}:${raw}`, schema);
     const node = result.ast;
     if (node?.type === 'filter' && node.op === 'eq')
         return keyOf(node.value, getField(schema, target.name));
-    return `\u0000${value}`;
+    return `\u0000${raw}`;
 }
 
 function keyOf(value: Value, field: FieldDefinition): string {

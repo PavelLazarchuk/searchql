@@ -1,4 +1,5 @@
 import { parseDate } from './date';
+import { SearchqlError } from './errors';
 import { NAME_PATTERN, canBeEmpty, enumKeys, fieldNames, internals, isRangeable } from './schema';
 import {
     indexOfUnquoted,
@@ -77,9 +78,12 @@ class Parser {
         private readonly allowShortcuts: boolean
     ) {
         internals(schema);
-        const maxLength = options.maxLength ?? DEFAULT_MAX_LENGTH;
-        this.maxDepth = options.maxDepth ?? DEFAULT_MAX_DEPTH;
-        this.maxTerms = options.maxTerms ?? DEFAULT_MAX_TERMS;
+        if (options === null || typeof options !== 'object') {
+            throw new SearchqlError('invalid-option', 'parse() options must be an object');
+        }
+        const maxLength = limitOf(options, 'maxLength', DEFAULT_MAX_LENGTH);
+        this.maxDepth = limitOf(options, 'maxDepth', DEFAULT_MAX_DEPTH);
+        this.maxTerms = limitOf(options, 'maxTerms', DEFAULT_MAX_TERMS);
         this.tooLong = input.length > maxLength;
         this.tokens = this.tooLong ? [] : scan(input).filter(token => token.type !== 'ws');
         if (this.tooLong) {
@@ -755,6 +759,17 @@ class Parser {
             ...(suggestions && suggestions.length > 0 ? { suggestions } : {}),
         });
     }
+}
+
+function limitOf(options: ParseOptions, name: keyof ParseOptions, fallback: number): number {
+    const value = options[name] ?? fallback;
+    if (value !== Infinity && !(Number.isInteger(value) && value >= 0)) {
+        throw new SearchqlError(
+            'invalid-option',
+            `parse() option ${name} must be a non-negative integer or Infinity`
+        );
+    }
+    return value;
 }
 
 function combine(type: 'and' | 'or', children: QueryNode[]): QueryNode | null {

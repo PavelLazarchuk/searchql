@@ -336,7 +336,7 @@ Known differences between engines: SQLite's `LOWER()` and `LIKE` fold ASCII lett
 
 ## Errors
 
-User input never throws. Compilers throw `SearchqlError` (with a `code`) for problems in your setup: a `@variable` without a value (`missing-variable`), a construct a target can't express such as a list column on MySQL without a column function (`unsupported`), or bad options (`invalid-option`). An invalid `timeZone` throws the `RangeError` from `Intl`.
+User input never throws. Compilers throw `SearchqlError` (with a `code`) for problems in your setup: a `@variable` without a value (`missing-variable`), a construct a target can't express such as a list column on MySQL without a column function (`unsupported`), or bad options (`invalid-option`) — `parse` too, when `maxLength`, `maxDepth` or `maxTerms` is not a non-negative integer or `Infinity`. An invalid `timeZone` throws the `RangeError` from `Intl`.
 
 ## Alternatives
 

@@ -438,6 +438,21 @@ describe('limits', () => {
             'status in [open, closed]'
         );
     });
+
+    it('rejects limits that are not non-negative integers', () => {
+        for (const bad of [Number.NaN, -1, 1.5, '5']) {
+            expect(() => parse('a', issues, { maxTerms: bad as number })).toThrow(
+                'parse() option maxTerms must be a non-negative integer or Infinity'
+            );
+            expect(() => parse('a', issues, { maxLength: bad as number })).toThrow('maxLength');
+            expect(() => parse('a', issues, { maxDepth: bad as number })).toThrow('maxDepth');
+        }
+        expect(() => parse('a', issues, null as never)).toThrow(
+            'parse() options must be an object'
+        );
+        expect(parse('a b', issues, { maxTerms: Infinity }).ok).toBe(true);
+        expect(parse('(a)', issues, { maxDepth: 0 }).ok).toBe(false);
+    });
 });
 
 describe('schema guard', () => {

@@ -156,6 +156,14 @@ describe('removeFilter', () => {
         expect(removeFilter('comments:>1', issues, 'comments', '1')).toBe('comments:>1');
         expect(removeFilter('label:a* label:a', issues, 'label', 'a*')).toBe('label:a');
     });
+
+    it('keeps list items it could not parse', () => {
+        expect(removeFilter('status:open,bogus,closed x', issues, 'status', 'closed')).toBe(
+            'status:open,bogus x'
+        );
+        expect(removeFilter('is:open,nope', issues, 'is', 'open')).toBe('is:nope');
+        expect(removeFilter('label:a,,b', issues, 'label', 'b')).toBe('label:a');
+    });
 });
 
 describe('toggleFilter', () => {
@@ -169,6 +177,7 @@ describe('toggleFilter', () => {
         );
         expect(toggleFilter('-label:bug', issues, 'label', 'ui')).toBe('-label:bug label:ui');
         expect(toggleFilter('label:bug,ui x', issues, 'label', 'docs')).toBe('label:bug,ui,docs x');
+        expect(toggleFilter('label:bug, x', issues, 'label', 'ui')).toBe('label:bug,ui x');
     });
 
     it('removes a value that is already selected', () => {
